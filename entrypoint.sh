@@ -27,4 +27,7 @@ done
 echo "Writing to $OUTPUT"
 echo "Processing files $@"
 
-UspLicenseKey=$USP_LICENSE_KEY mp4split -o stdout:.temp $@ | aws s3 cp - $OUTPUT || aws s3 rm $OUTPUT
+set -o pipefail; \
+  UspLicenseKey=$USP_LICENSE_KEY mp4split -o stdout:.temp $@ | \
+  aws s3 cp - $OUTPUT || \
+  aws s3 rm $OUTPUT
