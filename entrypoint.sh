@@ -6,28 +6,29 @@ usage()
   exit 2
 }
 
-PARSED_ARGUMENTS=$(getopt -a -n s3-mp4split -o o: -- "$@")
-VALID_ARGUMENTS=$?
-if [ "$VALID_ARGUMENTS" != "0" ]; then
+args=()
+eval set -- "$@"
+while [[ $# > 0 ]]; do
+  case "$1" in
+    -o)
+      OUTPUT=$2
+      shift
+      ;;
+    *)
+      args+=($1)
+      ;;
+  esac
+  shift
+done
+
+if [ -z "$OUTPUT" ]; then
   usage
 fi
 
-# echo "PARSED_ARGUMENTS is $PARSED_ARGUMENTS"
-eval set -- "$PARSED_ARGUMENTS"
-while :
-do
-  case "$1" in
-    -o) OUTPUT="$2" ; shift 2 ;;
-    --) shift; break ;;
-    *) echo "Unexpected option: $1 - this should not happen."
-       usage ;;
-  esac
-done
-
 echo "Writing to $OUTPUT"
-echo "Processing files $@"
+echo "mp4split args: ${args[*]}"
 
 set -o pipefail; \
-  UspLicenseKey=$USP_LICENSE_KEY mp4split -o stdout:.temp $@ | \
+  UspLicenseKey=$USP_LICENSE_KEY mp4split -o stdout:.temp ${args[*]} | \
   aws s3 cp - $OUTPUT || \
   aws s3 rm $OUTPUT
