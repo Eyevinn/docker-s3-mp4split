@@ -48,5 +48,5 @@ echo "container credentials uri: $credentials_uri"
 
 set -o pipefail; \
   UspLicenseKey=$USP_LICENSE_KEY mp4split -o stdout:.temp ${s3_access_args[*]} ${args[*]} | \
-  AWS_CONTAINER_CREDENTIALS_RELATIVE_URI=credentials_uri aws s3 cp - $OUTPUT || \
-  AWS_CONTAINER_CREDENTIALS_RELATIVE_URI=credentials_uri aws s3 rm $OUTPUT
+  AWS_CONTAINER_CREDENTIALS_RELATIVE_URI=$credentials_uri aws s3 cp - $OUTPUT || \
+  AWS_CONTAINER_CREDENTIALS_RELATIVE_URI=$credentials_uri aws s3 rm $OUTPUT
