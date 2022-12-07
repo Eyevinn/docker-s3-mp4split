@@ -8,6 +8,8 @@ usage()
 
 args=()
 s3_access_args=()
+aws_access_key_id=$AWS_ACCESS_KEY_ID
+aws_secret_access_key=$AWS_SECRET_ACCESS_KEY
 
 eval set -- "$@"
 while [[ $# > 0 ]]; do
@@ -30,8 +32,8 @@ while [[ $# > 0 ]]; do
 done
 
 if [ ${#s3_access_args[@]} == 0 ]; then
-  if [ ! -z "$AWS_ACCESS_KEY_ID" ]; then
-    s3_access_args+=(--s3_access_key=$AWS_ACCESS_KEY_ID --s3_secret_key=$AWS_SECRET_ACCESS_KEY)
+  if [ ! -z "$aws_access_key_id" ]; then
+    s3_access_args+=(--s3_access_key=$aws_access_key_id --s3_secret_key=$aws_secret_access_key)
   fi
 fi
 
@@ -44,5 +46,5 @@ echo "mp4split args: ${args[*]}"
 
 set -o pipefail; \
   UspLicenseKey=$USP_LICENSE_KEY mp4split -o stdout:.temp ${s3_access_args[*]} ${args[*]} | \
-  aws s3 cp - $OUTPUT || \
-  aws s3 rm $OUTPUT
+  AWS_ACCESS_KEY_ID=$aws_access_key_id AWS_SECRET_ACCESS_KEY=$aws_secret_access_key aws s3 cp - $OUTPUT || \
+  AWS_ACCESS_KEY_ID=$aws_access_key_id AWS_SECRET_ACCESS_KEY=$aws_secret_access_key aws s3 rm $OUTPUT
