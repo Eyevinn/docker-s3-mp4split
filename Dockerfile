@@ -9,6 +9,7 @@ RUN apk update && apk add --update \
 RUN pip install --upgrade pip
 RUN pip install --upgrade awscli
 
+RUN echo 'export $(strings /proc/1/environ | grep AWS_CONTAINER_CREDENTIALS_RELATIVE_URI)' >> /root/.profile
 ADD ./entrypoint.sh /
 
 ENTRYPOINT [ "/entrypoint.sh" ]
