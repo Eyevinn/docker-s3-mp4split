@@ -10,6 +10,7 @@ args=()
 s3_access_args=()
 aws_access_key_id=$AWS_ACCESS_KEY_ID
 aws_secret_access_key=$AWS_SECRET_ACCESS_KEY
+credentials_uri=$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI
 
 eval set -- "$@"
 while [[ $# > 0 ]]; do
@@ -43,8 +44,9 @@ fi
 
 echo "Writing to $OUTPUT"
 echo "mp4split args: ${args[*]}"
+echo "container credentials uri: $credentials_uri"
 
 set -o pipefail; \
   UspLicenseKey=$USP_LICENSE_KEY mp4split -o stdout:.temp ${s3_access_args[*]} ${args[*]} | \
-  AWS_ACCESS_KEY_ID=$aws_access_key_id AWS_SECRET_ACCESS_KEY=$aws_secret_access_key aws s3 cp - $OUTPUT || \
-  AWS_ACCESS_KEY_ID=$aws_access_key_id AWS_SECRET_ACCESS_KEY=$aws_secret_access_key aws s3 rm $OUTPUT
+  AWS_CONTAINER_CREDENTIALS_RELATIVE_URI=credentials_uri aws s3 cp - $OUTPUT || \
+  AWS_CONTAINER_CREDENTIALS_RELATIVE_URI=credentials_uri aws s3 rm $OUTPUT
