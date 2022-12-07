@@ -27,6 +27,21 @@ docker run --rm \
   http://my.site/audio-file.mp4 \
 ```
 
+By default it will use the `<AWS ACCESS KEY ID>` and `<AWS SECRET ACCESS KEY>` as s3 access keys to mp4split. This can be overridden by providing these as arguments for mp4split, for example:
+
+```
+docker run --rm \
+  -e USP_LICENSE_KEY=<LICENSE_KEY> \
+  -e AWS_ACCESS_KEY_ID=<AWS ACCESS KEY ID> \
+  -e AWS_SECRET_ACCESS_KEY=<AWS SECRET ACCESS KEY> \
+  eyevinntechnology/s3-mp4split 
+  --s3_access_key=<S3 AWS ACCESS KEY ID> \
+  --s3_secret_key=<S3 AWS SECRET ACCESS KEY> \
+  -o s3://<outputbucket>/manifest.ism \
+  http://my.site/video-file.mp4 \
+  http://my.site/audio-file.mp4 \
+```
+
 ## Contributing
 
 If you're interested in contributing to the project:
