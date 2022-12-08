@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -o pipefail
+
 usage()
 {
   echo "Usage: s3-mp4split [ -o OUTPUT ] input(s)"
@@ -43,10 +45,15 @@ if [ -z "$OUTPUT" ]; then
 fi
 
 echo "Writing to $OUTPUT"
+echo "mp4split default aws_access_key_id: $aws_access_key_id"
+echo "mp4split default aws_secret_access_key: *****"
 echo "mp4split args: ${args[*]}"
 echo "container credentials uri: $credentials_uri"
 
-set -o pipefail; \
-  UspLicenseKey=$USP_LICENSE_KEY mp4split -o stdout:.temp ${s3_access_args[*]} ${args[*]} | \
-  AWS_CONTAINER_CREDENTIALS_RELATIVE_URI=$credentials_uri aws s3 cp - $OUTPUT || \
+UspLicenseKey=$USP_LICENSE_KEY mp4split -o stdout:.temp ${s3_access_args[*]} ${args[*]} | \
+  AWS_CONTAINER_CREDENTIALS_RELATIVE_URI=$credentials_uri aws s3 cp - $OUTPUT 
+if [[ $? > 0 ]]; then
+  echo "mp4split failed, cleaning up"
   AWS_CONTAINER_CREDENTIALS_RELATIVE_URI=$credentials_uri aws s3 rm $OUTPUT
+  exit 1
+fi
