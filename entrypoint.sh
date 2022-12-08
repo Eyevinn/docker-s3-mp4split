@@ -14,6 +14,7 @@ s3_region_args=()
 aws_access_key_id=$AWS_ACCESS_KEY_ID
 aws_secret_access_key=$AWS_SECRET_ACCESS_KEY
 aws_region=$AWS_REGION
+aws_security_token=""
 credentials_uri=$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI
 
 if [ -z "$aws_access_key_id" ]; then
@@ -34,6 +35,7 @@ EOF
   fi
   aws_access_key_id=`echo $creds | jq -r '.AccessKeyId'`
   aws_secret_access_key=`echo $creds | jq -r '.SecretAccessKey'`
+  aws_security_token=`echo $creds | jq -r '.Token'`
 fi
 
 eval set -- "$@"
@@ -49,6 +51,9 @@ while [[ $# > 0 ]]; do
     -*s3_secret*)
       s3_access_args+=($1)
       ;;
+    -*s3_security_token*)
+      s3_access_args+=($1)
+      ;;
     -*s3_region*)
       s3_region_args+=($1)
       ;;
@@ -62,6 +67,9 @@ done
 if [ ${#s3_access_args[@]} == 0 ]; then
   if [ ! -z "$aws_access_key_id" ]; then
     s3_access_args+=(--s3_access_key=$aws_access_key_id --s3_secret_key=$aws_secret_access_key)
+    if [ ! -z "$aws_security_token" ]; then
+      s3_access_args+=(--s3_security_token=$aws_security_token)
+    fi
   fi
 fi
 
@@ -77,7 +85,12 @@ fi
 
 echo "Writing to $OUTPUT"
 echo "mp4split default aws_access_key_id: $aws_access_key_id"
-echo "mp4split default aws_secret_access_key: *****"
+if [ ! -z "$aws_secret_access_key" ]; then
+  echo "mp4split default aws_secret_access_key: *****"
+fi
+if [ ! -z "$aws_security_token" ]; then
+  echo "mp4split temporary security token: *****"
+fi
 echo "mp4split default aws_region: $aws_region"
 echo "mp4split args: ${args[*]}"
 echo "container credentials uri: $credentials_uri"
