@@ -11,6 +11,7 @@ docker run --rm \
   -e USP_LICENSE_KEY=<LICENSE_KEY> \
   -e AWS_ACCESS_KEY_ID=<AWS ACCESS KEY ID> \
   -e AWS_SECRET_ACCESS_KEY=<AWS SECRET ACCESS KEY> \
+  -e AWS_REGION=eu-north-1 \
   eyevinntechnology/s3-mp4split -o s3://<outputbucket>/file.ismv \
   http://my.site/video-file.mp4
 ```
@@ -22,6 +23,7 @@ docker run --rm \
   -e USP_LICENSE_KEY=<LICENSE_KEY> \
   -e AWS_ACCESS_KEY_ID=<AWS ACCESS KEY ID> \
   -e AWS_SECRET_ACCESS_KEY=<AWS SECRET ACCESS KEY> \
+  -e AWS_REGION=eu-north-1 \
   eyevinntechnology/s3-mp4split -o s3://<outputbucket>/manifest.ism \
   http://my.site/video-file.mp4 \
   http://my.site/audio-file.mp4 \
@@ -34,9 +36,11 @@ docker run --rm \
   -e USP_LICENSE_KEY=<LICENSE_KEY> \
   -e AWS_ACCESS_KEY_ID=<AWS ACCESS KEY ID> \
   -e AWS_SECRET_ACCESS_KEY=<AWS SECRET ACCESS KEY> \
+  -e AWS_REGION=eu-north-1 \
   eyevinntechnology/s3-mp4split 
   --s3_access_key=<S3 AWS ACCESS KEY ID> \
   --s3_secret_key=<S3 AWS SECRET ACCESS KEY> \
+  --s3_region=<S3 AWS REGION> \
   -o s3://<outputbucket>/manifest.ism \
   http://my.site/video-file.mp4 \
   http://my.site/audio-file.mp4 \
