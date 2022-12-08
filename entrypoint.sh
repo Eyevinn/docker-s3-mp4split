@@ -32,8 +32,8 @@ if [ -z "$aws_access_key_id" ]; then
 }
 EOF
   fi
-  aws_access_key_id=`echo $creds | jq '.AccessKeyId'`
-  aws_secret_access_key=`echo $creds | jq '.SecretAccessKey'`
+  aws_access_key_id=`echo $creds | jq -r '.AccessKeyId'`
+  aws_secret_access_key=`echo $creds | jq -r '.SecretAccessKey'`
 fi
 
 eval set -- "$@"
