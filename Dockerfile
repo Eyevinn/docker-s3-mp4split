@@ -4,7 +4,8 @@ RUN apk update && apk add --update \
   bash \
   curl \
   python3 \
-  py3-pip
+  py3-pip \
+  jq
 
 RUN pip install --upgrade pip
 RUN pip install --upgrade awscli
