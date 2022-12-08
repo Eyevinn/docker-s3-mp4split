@@ -16,6 +16,26 @@ aws_secret_access_key=$AWS_SECRET_ACCESS_KEY
 aws_region=$AWS_REGION
 credentials_uri=$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI
 
+if [ -z "$aws_access_key_id" ]; then
+  echo "No AWS_ACCESS_KEY_ID provided, try to read from container credentials API"
+  if [ -z "$DUMMY_CRED" ]; then
+    creds=`curl --connect-timeout 1 169.254.170.2$credentials_uri`
+  else
+    echo "using dummy"
+    read -r -d '' creds << EOF
+{
+  "AccessKeyId": "ACCESS_KEY_ID",
+  "Expiration": "EXPIRATION_DATE",
+  "RoleArn": "TASK_ROLE_ARN",
+  "SecretAccessKey": "SECRET_ACCESS_KEY",
+  "Token": "SECURITY_TOKEN_STRING"
+}
+EOF
+  fi
+  aws_access_key_id=`echo $creds | jq '.AccessKeyId'`
+  aws_secret_access_key=`echo $creds | jq '.SecretAccessKey'`
+fi
+
 eval set -- "$@"
 while [[ $# > 0 ]]; do
   case "$1" in
