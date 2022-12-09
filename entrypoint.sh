@@ -95,7 +95,9 @@ echo "mp4split default aws_region: $aws_region"
 echo "mp4split args: ${args[*]}"
 echo "container credentials uri: $credentials_uri"
 
-UspLicenseKey=$USP_LICENSE_KEY mp4split -o stdout:.temp ${s3_access_args[*]} ${s3_region_args[*]} ${args[*]} | \
+output_extension=".${OUTPUT##*.}"
+
+UspLicenseKey=$USP_LICENSE_KEY mp4split -o stdout:${output_extension} ${s3_access_args[*]} ${s3_region_args[*]} ${args[*]} | \
   AWS_CONTAINER_CREDENTIALS_RELATIVE_URI=$credentials_uri aws s3 cp - $OUTPUT 
 if [[ $? > 0 ]]; then
   echo "mp4split failed, cleaning up"
